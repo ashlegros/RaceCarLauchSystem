@@ -1,0 +1,20 @@
+1-Ford-Mustang GT-2022-180.5-false
+2-Chevrolet-Camaro ZL1-2021-198.3-true
+3-Dodge-Challenger Hellcat-2023-203.7-false
+4-Toyota-Supra GR-2022-174.2-false
+5-Nissan-GTR Nismo-2020-205.9-true
+6-BMW-M4 Competition-2024-180.0-false
+7-Mercedes AMG-AMG GT-2023-196.8-true
+8-Audi-R8 V10-2021-204.5-false
+9-Porsche-911 Turbo S-2024-205.2-true
+10-Jaguar-F Type R-2022-186.4-false
+11-Lexus-LC 500-2023-168.9-false
+12-Subaru-WRX STI-2020-160.5-true
+13-Mazda-MX5 Miata-2021-140.8-false
+14-Honda-Civic Type R-2024-169.3-true
+15-Hyundai-Elantra N-2023-155.6-false
+16-Kia-Stinger GT-2022-167.4-true
+17-Alfa Romeo-Giulia Quadrifoglio-2021-191.1-false
+18-Aston Martin-Vantage-2024-195.6-true
+19-McLaren-720S-2023-212.8-false
+20-Ferrari-F8 Tributo-2022-211.5-true

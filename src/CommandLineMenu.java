@@ -3,6 +3,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.InputMismatchException;
+import java.util.Objects;
 import java.util.Scanner;
 
 /* Name: Ashbel Legros
@@ -14,54 +15,7 @@ import java.util.Scanner;
 */
 public class CommandLineMenu {
 
-    /* Method: loadRaceCarManager()
-       Purpose: handles txt file reading to populate DMS with data
-       Return Type: RaceCarManager
-     */
-    public RaceCarManager loadRaceCarManager() {
 
-        while(true) {
-            Scanner inputReader = new Scanner(System.in);
-
-            System.out.println("Please enter the path of your txt file (0 to exit): ");
-            String filePath = inputReader.nextLine();
-
-            if (filePath.equals("0")) {
-                System.exit(0);
-            }
-
-            RaceCarManager raceCarService = new RaceCarManager();
-            try(BufferedReader br = new BufferedReader(new FileReader(filePath))) {
-                System.out.println("Loading Race Car System...");
-
-                String line;
-                while ((line = br.readLine()) != null) {
-                    String[] data = line.split("-");
-
-                    int id = Integer.parseInt(data[0]);
-                    String make = data[1];
-                    String model = data[2];
-                    int year = Integer.parseInt(data[3]);
-                    double topSpeed = Double.parseDouble(data[4]);
-                    boolean hasLaunched = Boolean.parseBoolean(data[5]);
-
-                    RaceCar raceCar = new RaceCar(id, make, model, year, topSpeed, hasLaunched);
-                    raceCarService.addRaceCar(raceCar);
-                    System.out.println(raceCar);
-
-
-                }
-                System.out.println();
-                System.out.println("File successfully loaded.\n");
-                return raceCarService;
-
-            } catch (FileNotFoundException e) {
-                System.out.println("Could not locate the file.\n");
-            } catch (IOException e) {
-                System.out.println("Something went wrong!");
-            }
-        }
-    }
 
     /* Method: displayMenu()
        Purpose: displays interactive user menu and handles simple validation like InputMismatch exception
@@ -104,7 +58,14 @@ public class CommandLineMenu {
                     System.exit(0);
                     break;
                 case 1:
-                    raceCarService = loadRaceCarManager();
+                    System.out.println("Please enter the path of your txt file (0 to exit): ");
+                    String filePath = inputReader.nextLine();
+                    if (filePath.equals("0")) {
+                        break;
+                    }
+                    else {
+                        raceCarService.loadRaceCarManager(filePath, raceCarService);
+                    }
                     break;
                 case 2:
                     raceCarService.displayRaceCars();
@@ -262,10 +223,6 @@ public class CommandLineMenu {
                                 System.out.println("Please enter a integer.\n");
                                 inputReader.nextLine();
                             }
-
-                            if(!raceCarService.updateRaceCar(idUpdate)){
-                                System.out.println("Race Car could not be found\n");
-                            }
                         }
 
 
@@ -274,11 +231,11 @@ public class CommandLineMenu {
                         makeUpdate = inputReader.nextLine();
 
                         if (makeUpdate.isBlank()) {
+                            makeUpdate = carToBeUpdated.getMake();
                             break;
                         }
 
                         if (raceCarService.stringValid(makeUpdate)) {
-                            carToBeUpdated.setMake(makeUpdate);
                             break;
                         }
 
@@ -290,11 +247,11 @@ public class CommandLineMenu {
                         modelUpdate = inputReader.nextLine();
 
                         if (modelUpdate.isBlank()) {
+                            modelUpdate = carToBeUpdated.getModel();
                             break;
                         }
 
                         if (raceCarService.stringValid(modelUpdate)) {
-                            carToBeUpdated.setModel(modelUpdate);
                             break;
                         }
 
@@ -309,11 +266,11 @@ public class CommandLineMenu {
                             inputReader.nextLine();
 
                             if(yearUpdate == -1){
+                                yearUpdate = carToBeUpdated.getYear();
                                 break;
                             }
 
                             if(raceCarService.yearValid(yearUpdate)){
-                                carToBeUpdated.setYear(yearUpdate);
                                 break;
                             }
 
@@ -333,11 +290,11 @@ public class CommandLineMenu {
                             inputReader.nextLine();
 
                             if(topSpeedUpdate == -1){
+                                topSpeedUpdate = carToBeUpdated.getTopSpeed();
                                 break;
                             }
 
                             if(raceCarService.topSpeedValid(topSpeedUpdate)){
-                                carToBeUpdated.setTopSpeed(topSpeedUpdate);
                                 break;
                             }
 
@@ -355,8 +312,8 @@ public class CommandLineMenu {
                             System.out.print("New Launch Status: (0 for Not Launched : 1 for Launched / Enter -1 keep original " + carToBeUpdated.isHasLaunched() + "): ");
                             launchStatusUpdate = inputReader.nextInt();
 
-
                             if(launchStatusUpdate == -1){
+                                hasLaunchedUpdate = carToBeUpdated.boolHasLaunched();
                                 inputReader.nextLine();
                                 break;
                             }
@@ -364,14 +321,12 @@ public class CommandLineMenu {
                             if(raceCarService.launchValid(launchStatusUpdate)){
                                 if (launchStatusUpdate == 1) {
                                     hasLaunchedUpdate = true;
-                                    carToBeUpdated.setHasLaunched(hasLaunchedUpdate);
                                     System.out.println();
                                     inputReader.nextLine();
                                     break;
                                 }
                                 if (launchStatusUpdate == 0) {
                                     hasLaunchedUpdate = false;
-                                    carToBeUpdated.setHasLaunched(hasLaunchedUpdate);
                                     System.out.println();
                                     inputReader.nextLine();
                                     break;
@@ -386,8 +341,8 @@ public class CommandLineMenu {
                         }
                     }
 
-
-                    System.out.println("Update Entry: " + carToBeUpdated);
+                    raceCarService.updateRaceCar(idUpdate, makeUpdate, modelUpdate, yearUpdate, topSpeedUpdate, hasLaunchedUpdate);
+                    System.out.println("Updated Entry: " + carToBeUpdated);
                     break;
                 case 6:
                     System.out.println("\nLaunch Cars\n------------");
@@ -437,9 +392,15 @@ public class CommandLineMenu {
                         }
                     } while(!raceCarService.raceValid(launchCar1, launchCar2));
 
-                    if(raceCarService.launchRaceCars(launchCar1, launchCar2)){
-                        System.out.println("Race completed successfully!\n");
-                    }
+                    System.out.println("Race Car 1: " + launchCar1);
+                    System.out.println("Race Car 2: " + launchCar2);
+                    System.out.println();
+                    System.out.println("Launching Race Cars...");
+
+                    RaceCar winner = raceCarService.launchRaceCars(launchCar1, launchCar2);
+
+                    System.out.println("Winner is: " + winner.toString());
+                    System.out.println("Race completed successfully!\n");
 
                     break;
             }

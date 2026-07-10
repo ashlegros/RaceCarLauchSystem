@@ -6,6 +6,10 @@
  * Purpose : Handles modifications/actions to car records within the DMS. Also performs special function to race cars.
  * */
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 
@@ -24,6 +28,45 @@ public class RaceCarManager {
         this.raceCars = raceCars;
     }
 
+    /* Method: loadRaceCarManager()
+       Purpose: handles txt file reading to populate DMS with data
+       Return Type: RaceCarManager
+     */
+    public boolean loadRaceCarManager(String filePath, RaceCarManager raceCarManager) {
+        try(BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            System.out.println("\nLoading Race Car System...\n");
+
+            String line;
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split("-");
+
+                int id = Integer.parseInt(data[0]);
+                String make = data[1];
+                String model = data[2];
+                int year = Integer.parseInt(data[3]);
+                double topSpeed = Double.parseDouble(data[4]);
+                boolean hasLaunched = Boolean.parseBoolean(data[5]);
+
+                RaceCar raceCar = new RaceCar(id, make, model, year, topSpeed, hasLaunched);
+                raceCarManager.addRaceCar(raceCar);
+                System.out.println(raceCar);
+            }
+            System.out.println();
+            System.out.println("File successfully loaded.\n");
+            return true;
+
+        }
+        catch (FileNotFoundException e) {
+            System.out.println("Could not locate the file.\n");
+            return false;
+        }
+
+        catch (IOException e) {
+            System.out.println("Something went wrong!");
+            return false;
+        }
+    }
+
     /* Method: addRaceCar()
        Purpose: adds a race car to the list
        Return Type: boolean
@@ -31,7 +74,30 @@ public class RaceCarManager {
      */
     public boolean addRaceCar(RaceCar raceCar) {
         System.out.println("Adding Race Car...");
-        return raceCars.add(raceCar);
+
+        if (!idValid(raceCar.getVehicleID())) {
+            return false;
+        }
+
+        if (!stringValid(raceCar.getMake())) {
+            return false;
+        }
+
+        if (!stringValid(raceCar.getModel())) {
+            return false;
+        }
+
+        if (!yearValid(raceCar.getYear())) {
+            return false;
+        }
+
+        if (!topSpeedValid(raceCar.getTopSpeed())) {
+            return false;
+        }
+
+        raceCars.add(raceCar);
+
+        return true;
     }
 
     /* Method: removeRaceCar()
@@ -40,7 +106,16 @@ public class RaceCarManager {
        Arguments: int
      */
     public boolean removeRaceCar(int raceCarID) {
-        for (int i = 0; i<raceCars.size(); i++) {
+        RaceCar raceCar = idFound(raceCarID);
+
+        if (raceCar == null) {
+            return false;
+        }
+
+        raceCars.remove(raceCar);
+        System.out.println("Car removed successfully!");
+
+        /*for (int i = 0; i<raceCars.size(); i++) {
             RaceCar carToRemove = raceCars.get(i);
             if (carToRemove.getVehicleID() == raceCarID) {
                 raceCars.remove(i);
@@ -54,35 +129,58 @@ public class RaceCarManager {
                     return false;
                 }
             }
-        }
+        }*/
         return true;
     }
 
     /* Method: updateRaceCar()
        Purpose: updates an existing entry from the list using the id
        Return Type: boolean
-       Arguments: int
+       Arguments: int, String, String, int, double, boolean
      */
-    public boolean updateRaceCar(int raceCarID) {
-        System.out.println("Initiating Update...");
-        RaceCar carToUpdate = new RaceCar();
-        carToUpdate.setVehicleID(raceCarID);
+    public boolean updateRaceCar(int id, String make, String model, int year, double topSpeed, boolean hasLaunched) {
+        System.out.println("Updating Race Car...");
+
+        RaceCar carToBeUpdated = idFound(id);
+
+        if (carToBeUpdated == null) {
+            return false;
+        }
+
+        if (!stringValid(make)) {
+            return false;
+        }
+
+        if (!stringValid(model)) {
+            return false;
+        }
+
+        if (!yearValid(year)) {
+            return false;
+        }
+
+        if (!topSpeedValid(topSpeed)) {
+            return false;
+        }
+
+        carToBeUpdated.setMake(make);
+        carToBeUpdated.setModel(model);
+        carToBeUpdated.setYear(year);
+        carToBeUpdated.setTopSpeed(topSpeed);
+        carToBeUpdated.setHasLaunched(hasLaunched);
 
         return true;
     }
 
     /* Method: launchRaceCars()
        Purpose: simulates a race between two race cars by probability
-       Return Type: boolean
+       Return Type: RaceCar
        Arguments: RaceCar, RaceCar
      */
-    public boolean launchRaceCars(RaceCar raceCar1, RaceCar raceCar2) {
-
-
-        System.out.println("Race Car 1: " + raceCar1);
-        System.out.println("Race Car 2: " + raceCar2);
-        System.out.println();
-        System.out.println("Launching Race Cars...");
+    public RaceCar launchRaceCars(RaceCar raceCar1, RaceCar raceCar2) {
+        if (!raceValid(raceCar1, raceCar2)) {
+            return null;
+        }
 
         for (int i = 3; i >= 0 ; i--) {
             if (i == 0) {
@@ -93,22 +191,23 @@ public class RaceCarManager {
 
         }
 
-
         double totalSpeedCombine = raceCar1.getTopSpeed() + raceCar2.getTopSpeed();
         double winningChance = raceCar1.getTopSpeed() / totalSpeedCombine;
         double ran = Math.random();
 
+        RaceCar winner;
+
         if (ran < winningChance) {
-            System.out.println("Race Car 1 has won!\n");
+            winner = raceCar1;
         }
         else {
-            System.out.println("Race Car 2 has won!\n");
+            winner = raceCar2;
         }
 
         raceCar1.setHasLaunched(true);
         raceCar2.setHasLaunched(true);
 
-        return true;
+        return winner;
     }
 
     /* Method: displayRaceCars()
@@ -150,8 +249,8 @@ public class RaceCarManager {
     }
 
     /* Method: idFound()
-       Purpose: updates an existing entry from the list using the id
-       Return Type: boolean
+       Purpose: finds existing Car by id
+       Return Type: RaceCar
        Arguments: int
      */
     public RaceCar idFound(int id) {

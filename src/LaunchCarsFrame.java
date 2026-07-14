@@ -28,7 +28,7 @@ public class LaunchCarsFrame extends JFrame {
 
         setContentPane(launchPanel);
         setTitle("Launch Cars");
-        setSize(520, 165);
+        setSize(555, 165);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
@@ -43,12 +43,15 @@ public class LaunchCarsFrame extends JFrame {
 
             if (!raceCarService.raceValid(launchCar1, launchCar2)) {
                 JOptionPane.showMessageDialog(this, "Invalid Race! (Use to separate cars or cars that have not launched!)");
+                return;
             }
 
             RaceCar winner = raceCarService.launchRaceCars(launchCar1, launchCar2);
-            mainFrame.refreshRaceCarTable();
 
-            JOptionPane.showMessageDialog(this, "Winner is: " + winner);
+            if (winner != null) {
+                JOptionPane.showMessageDialog(this, "Winner is: " + winner);
+            }
+            mainFrame.refreshRaceCarTable();
 
             dispose();
         });

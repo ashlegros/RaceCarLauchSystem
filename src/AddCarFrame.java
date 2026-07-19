@@ -20,12 +20,12 @@ public class AddCarFrame extends JFrame {
     private JPanel buttonPanel;
     private JPanel carInfoPanel;
 
-    private RaceCarManager raceCarService;
+    private RaceCarDBManager raceCarDB;
     private MainFrame mainFrame;
 
-    public AddCarFrame(RaceCarManager raceCarService, MainFrame mainFrame) {
+    public AddCarFrame(RaceCarDBManager raceCarService, MainFrame mainFrame) {
 
-        this.raceCarService = raceCarService;
+        this.raceCarDB = raceCarDB;
         this.mainFrame = mainFrame;
 
         setContentPane(addPanel);

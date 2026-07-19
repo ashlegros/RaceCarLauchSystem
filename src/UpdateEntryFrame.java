@@ -20,13 +20,13 @@ public class UpdateEntryFrame extends JFrame {
     private JPanel buttonPanel;
     private JPanel carInfoPanel;
 
-    private RaceCarManager raceCarService;
+    private RaceCarDBManager raceCarDBService;
     private MainFrame mainFrame;
     private RaceCar updateCar;
 
-    public UpdateEntryFrame(RaceCarManager raceCarService, RaceCar updateCar, MainFrame mainFrame) {
+    public UpdateEntryFrame(RaceCarDBManager raceCarService, RaceCar updateCar, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
-        this.raceCarService =  raceCarService;
+        this.raceCarDBService =  raceCarService;
         this.updateCar = updateCar;
 
         setContentPane(updatePanel);
@@ -49,24 +49,24 @@ public class UpdateEntryFrame extends JFrame {
                 int year = Integer.parseInt(yearField.getText());
                 double speed = Double.parseDouble(speedField.getText());
 
-                if (!raceCarService.stringValid(make)) {
+                if (!raceCarDBService.stringValid(make)) {
                     JOptionPane.showMessageDialog(this, "Please enter a valid make (no blanks or spaces)");
                     return;
                 }
-                if (!raceCarService.stringValid(model)) {
+                if (!raceCarDBService.stringValid(model)) {
                     JOptionPane.showMessageDialog(this, "Please enter a valid model (no blanks or spaces)");
                     return;
                 }
-                if (!raceCarService.yearValid(year)) {
+                if (!raceCarDBService.yearValid(year)) {
                     JOptionPane.showMessageDialog(this, "Please enter a valid year (2000-2026)");
                     return;
                 }
-                if (!raceCarService.topSpeedValid(speed)) {
+                if (!raceCarDBService.topSpeedValid(speed)) {
                     JOptionPane.showMessageDialog(this, "Please enter a valid speed (one decimal format)");
                     return;
                 }
 
-                raceCarService.updateRaceCar(updateCar.getVehicleID(), make, model, year, speed, updateCar.boolHasLaunched());
+                raceCarDBService.updateRaceCar(updateCar.getVehicleID(), make, model, year, speed, updateCar.boolHasLaunched());
 
                 mainFrame.refreshRaceCarTable();
 

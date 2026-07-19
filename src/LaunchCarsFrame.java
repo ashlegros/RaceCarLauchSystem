@@ -2,7 +2,7 @@
  * Name : Ashbel Legros
  * Course : Software Development I
  * Date : 07/13/26
- * Class : MainFram
+ * Class : LaunchCarsFrame
  * Purpose : Provides launch window for user to simulate a race.
  * */
 
@@ -19,11 +19,11 @@ public class LaunchCarsFrame extends JFrame {
     private JLabel carOneLabel;
     private JLabel carTwoLabel;
 
-    private RaceCarManager raceCarManager;
+    private RaceCarDBManager raceCarDBService;
     private MainFrame mainFrame;
 
-    public LaunchCarsFrame(RaceCarManager raceCarService, MainFrame mainFrame) {
-        this.raceCarManager = raceCarService;
+    public LaunchCarsFrame(RaceCarDBManager raceCarService, MainFrame mainFrame) {
+        this.raceCarDBService = raceCarService;
         this.mainFrame = mainFrame;
 
         setContentPane(launchPanel);
@@ -32,7 +32,7 @@ public class LaunchCarsFrame extends JFrame {
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-        for (RaceCar raceCar : raceCarManager.getRaceCars()) {
+        for (RaceCar raceCar : raceCarDBService.getRaceCars()) {
             carOneIntBox.addItem(raceCar);
             carTwoIntBox.addItem(raceCar);
         }
@@ -41,12 +41,12 @@ public class LaunchCarsFrame extends JFrame {
             RaceCar launchCar1 = (RaceCar) carOneIntBox.getSelectedItem();
             RaceCar launchCar2 = (RaceCar) carTwoIntBox.getSelectedItem();
 
-            if (!raceCarService.raceValid(launchCar1, launchCar2)) {
+            if (!raceCarDBService.raceValid(launchCar1, launchCar2)) {
                 JOptionPane.showMessageDialog(this, "Invalid Race! (Use to separate cars or cars that have not launched!)");
                 return;
             }
 
-            RaceCar winner = raceCarService.launchRaceCars(launchCar1, launchCar2);
+            RaceCar winner = raceCarDBService.launchRaceCars(launchCar1, launchCar2);
 
             if (winner != null) {
                 JOptionPane.showMessageDialog(this, "Winner is: " + winner);

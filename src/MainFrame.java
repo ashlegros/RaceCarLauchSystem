@@ -9,6 +9,9 @@
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 public class MainFrame extends JFrame{
     //From ui swing form
@@ -24,11 +27,11 @@ public class MainFrame extends JFrame{
     private JScrollPane tableScrollPane;
     private JPanel buttonPanel;
 
-    private RaceCarManager raceCarService;
+    private RaceCarDBManager raceCarDBService;
     private DefaultTableModel tableModel;
 
-    public MainFrame(RaceCarManager raceCarService) {
-        this.raceCarService = raceCarService;
+    public MainFrame(RaceCarDBManager raceCarService) {
+        this.raceCarDBService = raceCarService;
 
         setContentPane(mainPanel);
         setTitle("Race Car Launch System");
@@ -61,7 +64,7 @@ public class MainFrame extends JFrame{
             if (userReturn == JFileChooser.APPROVE_OPTION) {
                 String filePath = fileChooser.getSelectedFile().getAbsolutePath();
 
-                boolean loadStatus = this.raceCarService.loadRaceCarManager(filePath);
+                boolean loadStatus = this.raceCarDBService.loadRaceCarDB(filePath);
 
                 if (loadStatus) {
                     refreshRaceCarTable();
@@ -72,7 +75,7 @@ public class MainFrame extends JFrame{
         });
 
         addCarButton.addActionListener(e -> {
-            new AddCarFrame(raceCarService, this);
+            new AddCarFrame(raceCarDBService, this);
         });
 
         removeCarButton.addActionListener(e -> {
@@ -83,12 +86,12 @@ public class MainFrame extends JFrame{
                return;
            }
 
-           RaceCar removedCar = raceCarService.getRaceCars().get(userSelectedRow);
+           int idToBeRemoved = (Integer) tableModel.getValueAt(userSelectedRow, 0);
 
-           int userChoice = JOptionPane.showConfirmDialog(this, "Do you want to remove car: " + removedCar.toString(), "Remove Car", JOptionPane.YES_NO_OPTION);
+           int userChoice = JOptionPane.showConfirmDialog(this, "Do you want to remove car ID: " + idToBeRemoved, "Remove Car", JOptionPane.YES_NO_OPTION);
 
            if (userChoice == JOptionPane.YES_OPTION) {
-               raceCarService.removeRaceCar(removedCar.getVehicleID());
+               raceCarDBService.removeRaceCar(idToBeRemoved);
                refreshRaceCarTable();
            }
         });
@@ -101,13 +104,22 @@ public class MainFrame extends JFrame{
                return;
            }
 
-           RaceCar updatedCar = raceCarService.getRaceCars().get(userSelectedRow);
+           int id = (Integer)raceCarTable.getValueAt(userSelectedRow, 0);
+           String make = (String)raceCarTable.getValueAt(userSelectedRow, 1);
+           String model = (String)raceCarTable.getValueAt(userSelectedRow, 2);
+           Integer year = (Integer)raceCarTable.getValueAt(userSelectedRow, 3);
+           Double topSpeed = (Double)raceCarTable.getValueAt(userSelectedRow, 4);
 
-           new UpdateEntryFrame(raceCarService, updatedCar, this);
+           String status = (String)raceCarTable.getValueAt(userSelectedRow, 5);
+           boolean launchStatus = status.equals("Launched");
+
+           RaceCar updatedCar = new RaceCar(id, make, model, year, topSpeed, launchStatus);
+
+           new UpdateEntryFrame(raceCarDBService, updatedCar, this);
         });
 
         launchCarsButton.addActionListener(e -> {
-            new LaunchCarsFrame(raceCarService, this);
+            new LaunchCarsFrame(raceCarDBService, this);
         });
 
         exitButton.addActionListener(e -> System.exit(0));
@@ -120,17 +132,25 @@ public class MainFrame extends JFrame{
     // Return: void
     public void refreshRaceCarTable() {
         tableModel.setRowCount(0);
-        for (RaceCar raceCar : raceCarService.getRaceCars()) {
 
-            Object[] row = {
-                    raceCar.getVehicleID(),
-                    raceCar.getMake(),
-                    raceCar.getModel(),
-                    raceCar.getYear(),
-                    raceCar.getTopSpeed(),
-                    raceCar.isHasLaunched()
-            };
-            tableModel.addRow(row);
+        String query = "SELECT * FROM RaceCars";
+        try {
+            Statement statement = raceCarDBService.getConnection().createStatement();
+            ResultSet resultSet = statement.executeQuery(query);
+
+            while (resultSet.next()) {
+                tableModel.addRow(new Object[]{
+                        resultSet.getInt("VehicleID"),
+                        resultSet.getString("Make"),
+                        resultSet.getString("Model"),
+                        resultSet.getInt("Year"),
+                        resultSet.getDouble("TopSpeed"),
+                        resultSet.getBoolean("LaunchStatus") ? "Launched" : "Not Launched"
+                });
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error connecting to database");
         }
     }
 }

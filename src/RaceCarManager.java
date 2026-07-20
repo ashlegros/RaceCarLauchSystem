@@ -26,26 +26,7 @@ public class RaceCarManager {
 
     //Validation Methods
 
-    /* Method: idValid()
-       Purpose: validates id for adding usage: checks if id is unique and non-negative
-       Return Type: boolean
-       Arguments: int
-     */
-    public boolean idValid(int id) {
-        for (RaceCar raceCar : raceCars){
-            if (raceCar.getVehicleID() == id){
-                System.out.println("Race Car ID (" + id + ") already exists.\n");
-                return false;
-            }
-        }
 
-        if (id < 0){
-            System.out.println("Please enter a positive number.\n");
-            return false;
-        }
-
-        return true;
-    }
 
     /* Method: idFound()
        Purpose: finds existing Car by id

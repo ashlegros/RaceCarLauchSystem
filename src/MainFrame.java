@@ -75,11 +75,21 @@ public class MainFrame extends JFrame{
         });
 
         addCarButton.addActionListener(e -> {
+            if (!raceCarService.hasConnection()) {
+                JOptionPane.showMessageDialog(null, "Connection Failed! Please connect to a database.");
+                return;
+            }
+
             new AddCarFrame(raceCarDBService, this);
         });
 
         removeCarButton.addActionListener(e -> {
-           int userSelectedRow = raceCarTable.getSelectedRow();
+            if (!raceCarService.hasConnection()) {
+                JOptionPane.showMessageDialog(null, "Connection Failed! Please connect to a database.");
+                return;
+            }
+
+            int userSelectedRow = raceCarTable.getSelectedRow();
 
            if (userSelectedRow == -1) {
                JOptionPane.showMessageDialog(this, "Select the entry you would like to remove from table", "No Car Selection", JOptionPane.ERROR_MESSAGE);
@@ -97,7 +107,12 @@ public class MainFrame extends JFrame{
         });
 
         updateEntryButton.addActionListener(e -> {
-           int userSelectedRow = raceCarTable.getSelectedRow();
+            if (!raceCarService.hasConnection()) {
+                JOptionPane.showMessageDialog(null, "Connection Failed! Please connect to a database.");
+                return;
+            }
+
+            int userSelectedRow = raceCarTable.getSelectedRow();
 
            if (userSelectedRow == -1) {
                JOptionPane.showMessageDialog(this, "Select the entry you would like to update from table", "No Car Selection", JOptionPane.ERROR_MESSAGE);
@@ -119,6 +134,11 @@ public class MainFrame extends JFrame{
         });
 
         launchCarsButton.addActionListener(e -> {
+            if (!raceCarService.hasConnection()) {
+                JOptionPane.showMessageDialog(null, "Connection Failed! Please connect to a database.");
+                return;
+            }
+
             new LaunchCarsFrame(raceCarDBService, this);
         });
 

@@ -1,11 +1,3 @@
-/*
- * Name : Ashbel Legros
- * Course : Software Development I
- * Date : 07/13/26
- * Class : MainFrame
- * Purpose : Provides main window for user interaction.
- * */
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -13,6 +5,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+/**
+ * This class provides the main window for user interaction using Java Swing. It displays the main menu for the Race Car
+ * Launch System. Users utilize buttons to perform actions. Buttons are linked to business logic from RaceCarDBManager class.
+ *
+ * @author Ashbel Legros
+ * */
 public class MainFrame extends JFrame{
     //From ui swing form
     private JTable raceCarTable;
@@ -30,6 +28,11 @@ public class MainFrame extends JFrame{
     private RaceCarDBManager raceCarDBService;
     private DefaultTableModel tableModel;
 
+    /**
+     * Initializes the main window for the GUI. It passed a RaceCarDBManager to help perform connectivity
+     * as well CRUD operations.
+     * @param raceCarService This allows the GUI to perform CRUD functionality and connect to the database.
+     */
     public MainFrame(RaceCarDBManager raceCarService) {
         this.raceCarDBService = raceCarService;
 
@@ -147,9 +150,9 @@ public class MainFrame extends JFrame{
         setVisible(true);
     }
 
-    // Method: updateRaceCarTable
-    // Purpose: refreshes the JTable in the GUI (used after changes have been performed)
-    // Return: void
+    /**
+     * This method refreshes the JTable in the GUI to reflect current data from the database
+     */
     public void refreshRaceCarTable() {
         tableModel.setRowCount(0);
 

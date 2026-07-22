@@ -1,13 +1,12 @@
-/*
- * Name : Ashbel Legros
- * Course : Software Development I
- * Date : 07/13/26
- * Class : UpdateEntryFrame
- * Purpose : Provides update form for user to modify existing information.
- * */
-
 import javax.swing.*;
 
+/**
+ *  This class provides an update form for user to modify existing information. Once new information replaces existing data,
+ *  changes are made to the database. This window appears after clicking the Update Entry button form the
+ *  main window, MainFrame.
+ *
+ * @author Ashbel Legros
+ **/
 public class UpdateEntryFrame extends JFrame {
     private JTextField idField;
     private JTextField makeField;
@@ -24,6 +23,12 @@ public class UpdateEntryFrame extends JFrame {
     private MainFrame mainFrame;
     private RaceCar updateCar;
 
+    /**
+     * Initializes a window that allows the user to update select existing data.
+     * @param raceCarService This allows the window to perform SQL operations to the database
+     * @param updateCar a pre-existing car that is to be updated with user input
+     * @param mainFrame This allows the window to refresh the table to the main window.
+     */
     public UpdateEntryFrame(RaceCarDBManager raceCarService, RaceCar updateCar, MainFrame mainFrame) {
         this.mainFrame = mainFrame;
         this.raceCarDBService =  raceCarService;

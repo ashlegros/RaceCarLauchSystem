@@ -1,13 +1,11 @@
-/*
- * Name : Ashbel Legros
- * Course : Software Development I
- * Date : 07/13/26
- * Class : LaunchCarsFrame
- * Purpose : Provides launch window for user to simulate a race.
- * */
-
 import javax.swing.*;
 
+/**
+ * This class provides a launch window for user to simulate a race. They can choose two cars that have not
+ * been launched, and race them against each other.
+ *
+ * @author Ashbel Legros
+ * */
 public class LaunchCarsFrame extends JFrame {
     private JButton launchButton;
     private JButton cancelButton;
@@ -22,6 +20,11 @@ public class LaunchCarsFrame extends JFrame {
     private RaceCarDBManager raceCarDBService;
     private MainFrame mainFrame;
 
+    /**
+     * Initializes the launch window which allows users to simulate a race between two cars.
+     * @param raceCarService This allows the window to perform SQL operations to the database
+     * @param mainFrame This allows the window to refresh the table after changes have been made to the main window
+     */
     public LaunchCarsFrame(RaceCarDBManager raceCarService, MainFrame mainFrame) {
         this.raceCarDBService = raceCarService;
         this.mainFrame = mainFrame;

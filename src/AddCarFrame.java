@@ -1,13 +1,11 @@
-/*
- * Name : Ashbel Legros
- * Course : Software Development I
- * Date : 07/13/26
- * Class : AddCarFrame
- * Purpose : Provides a form for user to enter information for a new entry.
- * */
-
 import javax.swing.*;
 
+/**
+ * This class provides a form for user to enter information for a new entry. Once saved, new entry will be created in the database.
+ * This form appears after clicking the add button from the main window, MainFrame.
+ *
+ * @author Ashbel Legros
+ * */
 public class AddCarFrame extends JFrame {
     private JTextField idField;
     private JTextField makeField;
@@ -23,6 +21,11 @@ public class AddCarFrame extends JFrame {
     private RaceCarDBManager raceCarDB;
     private MainFrame mainFrame;
 
+    /**
+     * Initializes a window that allows users to input data for a new entry.
+     * @param raceCarService Allows the window to perform SQL queries to add new entries to the database
+     * @param mainFrame Helps refresh the table after changes have been made.
+     */
     public AddCarFrame(RaceCarDBManager raceCarService, MainFrame mainFrame) {
 
         this.raceCarDB = raceCarDB;
